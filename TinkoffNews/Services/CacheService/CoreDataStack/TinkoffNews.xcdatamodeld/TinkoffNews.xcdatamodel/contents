@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13240" systemVersion="16G29" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="NewsContentEntity" representedClassName="NewsContentEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="bankInfoTypeId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="content" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="creationDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="lastModificationDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="typeId" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="title" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="NewsHeaderEntity" inverseName="content" inverseEntity="NewsHeaderEntity" syncable="YES"/>
+    </entity>
+    <entity name="NewsHeaderEntity" representedClassName="NewsHeaderEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="bankInfoTypeId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="publicationDate" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="text" attributeType="String" syncable="YES"/>
+        <relationship name="content" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="NewsContentEntity" inverseName="title" inverseEntity="NewsContentEntity" syncable="YES"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+                <constraint value="name"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <elements>
+        <element name="NewsContentEntity" positionX="-9389" positionY="-6487" width="128" height="133"/>
+        <element name="NewsHeaderEntity" positionX="-9695" positionY="-6487" width="128" height="135"/>
+    </elements>
+</model>
