@@ -33,7 +33,7 @@ class NewsContentVC: UIViewController, AlertViewControllerProtocol {
     private func setupWebView() {
         webView = WKWebView(frame: self.view.frame)
         view.addSubview(webView)
-        
+
         let height = NSLayoutConstraint(item: webView, attribute:.height, relatedBy:.equal, toItem: view, attribute: .height, multiplier: 1, constant: 0)
         let width = NSLayoutConstraint(item: webView, attribute:.width, relatedBy:.equal, toItem: view, attribute: .width, multiplier: 1, constant: 0)
         view.addConstraints([height, width])

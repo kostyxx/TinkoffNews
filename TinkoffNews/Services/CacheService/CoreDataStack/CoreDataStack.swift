@@ -13,7 +13,7 @@ private let threadContextKey = "threadMOC"
 
 class CoreDataStack {
     
-    let notificationCenter = NotificationCenter.default
+    private let notificationCenter = NotificationCenter.default
     
     init() {
         notificationCenter.addObserver(self, selector: #selector(managedObjectContextDidSave), name: NSNotification.Name.NSManagedObjectContextDidSave, object: nil)

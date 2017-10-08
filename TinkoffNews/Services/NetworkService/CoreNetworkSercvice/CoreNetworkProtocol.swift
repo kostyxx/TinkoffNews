@@ -15,7 +15,6 @@ public enum HTTPMethod: String {
 }
 
 protocol CoreNetworkProtocol {
-    init(baseURL:String, dateDecodingStrategy:JSONDecoder.DateDecodingStrategy)
     func query<T> (path:String?, method:HTTPMethod, params:[String:String]?, requestObject:T.Type,
                    completeClojure:@escaping(Error?, T?) -> Void) -> URLSessionTask? where T:Decodable
 }

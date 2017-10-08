@@ -19,7 +19,7 @@ class FetchedController:NSObject {
         self.moc = moc
     }
     
-    var fetchedResultsController: NSFetchedResultsController<NewsHeaderEntity> {
+    private var fetchedResultsController: NSFetchedResultsController<NewsHeaderEntity> {
         if _fetchedResultsController != nil {
             return _fetchedResultsController!
         }
