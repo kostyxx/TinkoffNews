@@ -8,7 +8,7 @@
 
 import UIKit
 
-class NewsHeaderCell: UITableViewCell {
+class NewsHeaderCell: UITableViewCell, ReusableView {
 
     @IBOutlet private weak var titleLabel: UILabel!
     @IBOutlet private weak var publicationDateLabel: UILabel!

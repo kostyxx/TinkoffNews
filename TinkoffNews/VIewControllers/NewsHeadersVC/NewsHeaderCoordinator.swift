@@ -27,10 +27,12 @@ class NewsHeaderCoordinator {
         cacheService = CacheService(coreDataStack: coreDataStack)
         let fetchingController = FetchedController(moc: coreDataStack.currentContext)
         
-        let networkService = NetWorkApiService(baseURL: TinkoffNewsAPIService.baseURL, dateDecodingStrategy:TinkoffNewsAPIService.dateDecodingStrategy)
+        let networkService = NetWorkApiService(baseURL: TinkoffNewsAPIService.baseURL,
+                                               dateDecodingStrategy:TinkoffNewsAPIService.dateDecodingStrategy)
         tinkoffNetworkService = TinkoffNewsAPIService(networkService: networkService)
         
-        let presenter = NewsHeaderPresenter(networkAPIService: tinkoffNetworkService!, fetchingController: fetchingController, cacheService: cacheService!)
+        let presenter = NewsHeaderPresenter(networkAPIService: tinkoffNetworkService!,
+                                            fetchingController: fetchingController, cacheService: cacheService!)
         presenter.coordinator = self
         
         let newsHeadersVC = UIStoryboard.init(.Main).initVC(NewsHeadersVC.self)
@@ -52,7 +54,8 @@ extension NewsHeaderCoordinator: NewsHeaderCoordinatorProtocol {
             let tinkoffNetworkService = tinkoffNetworkService else {
                 return;
         }
-        let contentCoordinator = NewsContentCoordinator(navController:navController, cacheService:cacheService,  networkService:tinkoffNetworkService, news:news)
+        let contentCoordinator = NewsContentCoordinator(navController:navController, cacheService:cacheService,
+                                                        networkService:tinkoffNetworkService, news:news)
         contentCoordinator.start()
     }
 }

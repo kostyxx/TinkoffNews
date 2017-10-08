@@ -12,7 +12,7 @@ private let kDateFormat = "dd MMMM yyyy HH:mm";
 
 class NewsHeaderPresenter {
     
-    lazy var dateFormatter:DateFormatter = {
+    private lazy var dateFormatter:DateFormatter = {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = kDateFormat
         return dateFormatter

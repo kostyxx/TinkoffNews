@@ -14,6 +14,7 @@ class NewsHeadersVC: UIViewController, AlertViewControllerProtocol  {
     
     var presenter:NewsHeaderPresenter!
     
+    var cellId:String!
     
     @IBOutlet private weak var tableView: UITableView!
     private let refreshControl = UIRefreshControl()
@@ -24,11 +25,12 @@ class NewsHeadersVC: UIViewController, AlertViewControllerProtocol  {
         update()
     }
     
-    func setupUI() {
+    private func setupUI() {
         refreshControl.addTarget(self, action: #selector(update), for: .valueChanged)
         tableView.insertSubview(refreshControl, at: 0)
-        tableView.register(UINib(nibName: "NewsHeaderCell", bundle: nil), forCellReuseIdentifier: "NewsHeaderCell")
-        navigationItem.title = "News"
+        cellId = NewsHeaderCell.reuseIdentifier
+        tableView.register(UINib(nibName: cellId, bundle: nil), forCellReuseIdentifier:cellId)
+        navigationItem.title = "Tinkoff News"
     }
     
     @objc func update(_ sender: Any? = nil) {
@@ -42,8 +44,6 @@ class NewsHeadersVC: UIViewController, AlertViewControllerProtocol  {
     }
 }
 
-
-
 extension NewsHeadersVC: UITableViewDataSource, UITableViewDelegate {
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -55,7 +55,7 @@ extension NewsHeadersVC: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell:NewsHeaderCell = tableView.dequeueReusableCell(withIdentifier: "NewsHeaderCell", for: indexPath) as! NewsHeaderCell
+        let cell = tableView.dequeueReusableCell(withIdentifier:cellId, for: indexPath) as! NewsHeaderCell
         let (title, dateString) = presenter.newsHeader(indexPath: indexPath)
         cell.configureCell(title:title, date:dateString)
         
@@ -65,7 +65,6 @@ extension NewsHeadersVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.presenter.selectElement(indexPath:indexPath)
     }
-    
 }
 
 

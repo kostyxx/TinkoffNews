@@ -13,6 +13,7 @@ class NewsContentPresenter {
     private let networkAPIService:TinkoffNewsAPIService
     private let cacheService:CacheService
     private let news:NewsHeaderEntity
+    
     init(networkAPIService:TinkoffNewsAPIService, cacheService:CacheService, news:NewsHeaderEntity) {
         self.cacheService = cacheService
         self.networkAPIService = networkAPIService
@@ -40,10 +41,7 @@ class NewsContentPresenter {
                         completionClojure(error, nil)
                     }
                 }
-                
             }
         }
-        
     }
-    
 }

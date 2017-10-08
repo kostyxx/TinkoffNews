@@ -19,7 +19,7 @@ extension UIStoryboard {
     }
     
     func initVC<T>(_ storyBoardType:T.Type) -> T where T : UIViewController {
-        let vcClassName:String = NSStringFromClass(storyBoardType).components(separatedBy: ".").last!
+        let vcClassName = String(describing:storyBoardType).components(separatedBy: ".").last!
         return self.instantiateViewController(withIdentifier: vcClassName) as! T
     }
 }

@@ -8,6 +8,8 @@
 
 import Foundation
 
+//MARK: NewsHeaders network entity
+
 struct NewsHeader : Decodable {
     let id:Int
     let name:String
@@ -49,8 +51,9 @@ struct NewsQueryResult : Decodable {
     let trackingId:String
 }
 
+//MARK: Content network entity
+
 struct NewsContent : Decodable {
-//    let title:NewsHeader
     let creationDate:Date
     let lastModificationDate:Date
     let content:String
@@ -61,7 +64,6 @@ struct NewsContent : Decodable {
         case milliseconds
     }
     enum ContentNewsKeys: String, CodingKey {
-//        case title
         case creationDate
         case lastModificationDate
         case content
@@ -71,8 +73,6 @@ struct NewsContent : Decodable {
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: ContentNewsKeys.self)
-        
-//        title = try container.decode(NewsHeader.self, forKey: .title)
         
         let creationDateContaiter = try container.nestedContainer(keyedBy: CodingKeys.self, forKey: ContentNewsKeys.creationDate)
         creationDate = try creationDateContaiter.decode(Date.self, forKey: .milliseconds)
