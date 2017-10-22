@@ -10,14 +10,14 @@ import Foundation
 
 class NewsContentPresenter {
     
-    private let networkAPIService:TinkoffNewsAPIService
-    private let cacheService:CacheService
+    typealias NewContentServiceDependencies = HasCacheService & HasTinkoffNetworkService
+    private let depencencies:NewContentServiceDependencies
     private let news:NewsHeaderEntity
     
-    init(networkAPIService:TinkoffNewsAPIService, cacheService:CacheService, news:NewsHeaderEntity) {
-        self.cacheService = cacheService
-        self.networkAPIService = networkAPIService
+    
+    init(dependencies: NewContentServiceDependencies, news:NewsHeaderEntity) {
         self.news = news
+        self.depencencies = dependencies
     }
     
     func fetchContentNews(completionClojure:@escaping (Error?, String?) -> Void) {
@@ -27,7 +27,7 @@ class NewsContentPresenter {
             return
         }
         let id = Int(news.id)
-        networkAPIService.fetchNews(id: id) { [weak self] (error, contentResult) in
+        depencencies.tinkoffNewsAPIService.fetchNews(id: id) { [weak self] (error, contentResult) in
             DispatchQueue.main.async {
                 if let error = error {
                     completionClojure(error, nil)
@@ -35,7 +35,7 @@ class NewsContentPresenter {
                 }
                 if let content = contentResult?.payload {
                     do {
-                        try self?.cacheService.saveContentNews(content: content, for: self!.news)
+                        try self?.depencencies.cacheService.saveContentNews(content: content, for: self!.news)
                         completionClojure(nil, self?.news.content?.content)
                     } catch {
                         completionClojure(error, nil)

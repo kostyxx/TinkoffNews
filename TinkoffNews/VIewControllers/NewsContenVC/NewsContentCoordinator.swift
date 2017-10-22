@@ -11,23 +11,30 @@ import UIKit
 class NewsContentCoordinator {
     
     private let navController:UINavigationController
-    private let cacheService:CacheService
-    private let networkService:TinkoffNewsAPIService
+    
+    private let serviceDependencies:AppServiceDependency
     private let newsHeaderEntity:NewsHeaderEntity
     
-    init(navController:UINavigationController, cacheService:CacheService,  networkService:TinkoffNewsAPIService, news:NewsHeaderEntity) {
+    init(navController:UINavigationController, serviceDependencies:AppServiceDependency, news:NewsHeaderEntity) {
         self.navController = navController
-        self.cacheService = cacheService
-        self.networkService = networkService
+        self.serviceDependencies = serviceDependencies
         self.newsHeaderEntity = news
     }
     
     func start() {
-        let presenter = NewsContentPresenter(networkAPIService: networkService, cacheService: cacheService,  news:newsHeaderEntity)
-        
         let newsContentVC = UIStoryboard.init(.Main).initVC(NewsContentVC.self)
-        newsContentVC.presenter = presenter
-        
-        navController.pushViewController(newsContentVC, animated: true)
+        configureVC(vc: newsContentVC)
+        startNavigation(for: newsContentVC)
+    }
+}
+
+private extension NewsContentCoordinator {
+    func configureVC(vc:NewsContentVC) {
+        let presenter = NewsContentPresenter(dependencies: serviceDependencies, news: newsHeaderEntity)
+        vc.presenter = presenter
+    }
+    
+    func startNavigation(for vc:NewsContentVC) {
+        navController.pushViewController(vc, animated: true)
     }
 }

@@ -9,7 +9,7 @@
 import Foundation
 import CoreData
 
-class FetchedController:NSObject {
+class FetchedNewsController:NSObject {
     weak var fetchingDelegate:FetchingResultDelegate?
     
     private let moc: NSManagedObjectContext
@@ -52,7 +52,7 @@ class FetchedController:NSObject {
     }
 }
 
-extension FetchedController : NSFetchedResultsControllerDelegate {
+extension FetchedNewsController : NSFetchedResultsControllerDelegate {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         self.fetchingDelegate?.willUpdate()
     }

@@ -8,29 +8,24 @@
 
 import Foundation
 
-private let kDateFormat = "dd MMMM yyyy HH:mm";
+private let kNewsDateFormat = "dd MMMM yyyy HH:mm";
 
 class NewsHeaderPresenter {
     
+    typealias Depedencies = HasTinkoffNetworkService & HasCacheService & HasFetchedController
+    private let depedencies: Depedencies
+    
     private lazy var dateFormatter:DateFormatter = {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = kDateFormat
+        dateFormatter.dateFormat = kNewsDateFormat
         return dateFormatter
     }()
     
     var coordinator:NewsHeaderCoordinatorProtocol?
     
-    private let networkAPIService:TinkoffNewsAPIService
-    private let fetchingController:FetchedController
-    private let cacheService:CacheService
-    
-    
-    init(networkAPIService:TinkoffNewsAPIService, fetchingController:FetchedController,cacheService:CacheService) {
-        self.networkAPIService = networkAPIService
-        self.fetchingController = fetchingController
-        self.cacheService = cacheService
+    init(depedencies:Depedencies) {
+        self.depedencies = depedencies
     }
-    
     
     func updateFetchNewsHeaders(completeClojure:@escaping(Error?) -> Void) {
         func completeFetchingClojure(error:Error?) {
@@ -39,7 +34,7 @@ class NewsHeaderPresenter {
             }
         }
         
-        self.networkAPIService.fetchNewsHeaders { (error, result) in
+        self.depedencies.tinkoffNewsAPIService.fetchNewsHeaders { (error, result) in
             if let networkError = error {
                 completeFetchingClojure(error: networkError)
                 return
@@ -47,7 +42,7 @@ class NewsHeaderPresenter {
             if let result = result {
                 do {
                     let headerNews = result.payload
-                    try self.cacheService.saveNewsHeader(newsHeaders: headerNews)
+                    try self.depedencies.cacheService.saveNewsHeader(newsHeaders: headerNews)
                     completeFetchingClojure(error: nil)
                 }
                 catch {
@@ -60,18 +55,18 @@ class NewsHeaderPresenter {
    
     
     func newsHeader(indexPath:IndexPath) -> (title:String, date:String) {
-        let newsHeader = self.fetchingController.element(indexPath: indexPath) as! NewsHeaderEntity
+        let newsHeader = depedencies.fetchedController.element(indexPath: indexPath) as! NewsHeaderEntity
         let title = newsHeader.text!
         let dateString = dateFormatter.string(from: newsHeader.publicationDate!)
         return (title, dateString)
     }
     
     func numberOfRows() -> Int {
-        return self.fetchingController.numberOfRows()
+        return depedencies.fetchedController.numberOfRows()
     }
     
     func selectElement(indexPath:IndexPath) {
-        let newsHeader = self.fetchingController.element(indexPath: indexPath) as! NewsHeaderEntity
+        let newsHeader = depedencies.fetchedController.element(indexPath: indexPath) as! NewsHeaderEntity
         coordinator?.showNewsContent(news: newsHeader)
     }
     

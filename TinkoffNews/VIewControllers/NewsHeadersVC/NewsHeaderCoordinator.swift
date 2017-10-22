@@ -16,46 +16,51 @@ class NewsHeaderCoordinator {
     
     private let window: UIWindow
     private var navigationController:UINavigationController?
-    private var cacheService:CacheService?
-    private var tinkoffNetworkService:TinkoffNewsAPIService?
+    
+    lazy private var serviceDependencies:AppServiceDependency = {
+        let coreDataStack = CoreDataStack()
+        let cacheService = CacheService(coreDataStack: coreDataStack)
+        let fetchingController = FetchedNewsController(moc: coreDataStack.currentContext)
+        let networkService = NetWorkApiService(baseURL: TinkoffNewsAPIService.baseURL,
+                                               dateDecodingStrategy:TinkoffNewsAPIService.dateDecodingStrategy)
+        let tinkoffNetworkService = TinkoffNewsAPIService(networkService: networkService)
+        
+        return AppServiceDependency(tinkoffNewsAPIService: tinkoffNetworkService, cacheService: cacheService,
+                                    fetchedController: fetchingController)
+    }()
+    
     init(window: UIWindow) {
         self.window = window
     }
     
     func start() {
-        let coreDataStack = CoreDataStack()
-        cacheService = CacheService(coreDataStack: coreDataStack)
-        let fetchingController = FetchedController(moc: coreDataStack.currentContext)
-        
-        let networkService = NetWorkApiService(baseURL: TinkoffNewsAPIService.baseURL,
-                                               dateDecodingStrategy:TinkoffNewsAPIService.dateDecodingStrategy)
-        tinkoffNetworkService = TinkoffNewsAPIService(networkService: networkService)
-        
-        let presenter = NewsHeaderPresenter(networkAPIService: tinkoffNetworkService!,
-                                            fetchingController: fetchingController, cacheService: cacheService!)
-        presenter.coordinator = self
-        
         let newsHeadersVC = UIStoryboard.init(.Main).initVC(NewsHeadersVC.self)
-        
-        newsHeadersVC.presenter = presenter
-        fetchingController.fetchingDelegate = newsHeadersVC
+        configureVC(vc: newsHeadersVC)
+        startNavigation(for:newsHeadersVC)
+    }
+}
+
+private extension NewsHeaderCoordinator {
+    func configureVC(vc:NewsHeadersVC) {
+        let presenter = NewsHeaderPresenter(depedencies: serviceDependencies)
+        presenter.coordinator = self
+        serviceDependencies.fetchedController.fetchingDelegate = vc
+        vc.presenter = presenter
+    }
+    
+    func startNavigation(for newsHeadersVC: NewsHeadersVC) {
         navigationController = UINavigationController(rootViewController: newsHeadersVC)
-        
         window.rootViewController = navigationController
         window.makeKeyAndVisible()
     }
-    
 }
 
 extension NewsHeaderCoordinator: NewsHeaderCoordinatorProtocol {
     func showNewsContent(news: NewsHeaderEntity) {
-        guard let navController = navigationController,
-            let cacheService = cacheService,
-            let tinkoffNetworkService = tinkoffNetworkService else {
-                return;
+        guard let navController = navigationController else {
+            return;
         }
-        let contentCoordinator = NewsContentCoordinator(navController:navController, cacheService:cacheService,
-                                                        networkService:tinkoffNetworkService, news:news)
+        let contentCoordinator = NewsContentCoordinator(navController: navController, serviceDependencies: serviceDependencies, news: news)
         contentCoordinator.start()
     }
 }

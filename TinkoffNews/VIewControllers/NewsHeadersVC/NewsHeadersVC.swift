@@ -8,13 +8,11 @@
 
 import UIKit
 
-
-
 class NewsHeadersVC: UIViewController, AlertViewControllerProtocol  {
     
     var presenter:NewsHeaderPresenter!
     
-    var cellId:String!
+    private var cellId:String!
     
     @IBOutlet private weak var tableView: UITableView!
     private let refreshControl = UIRefreshControl()
